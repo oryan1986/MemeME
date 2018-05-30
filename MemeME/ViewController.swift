@@ -15,9 +15,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
+    @IBOutlet weak var topToolBar: UIToolbar!
+    @IBOutlet weak var bottomToolBar: UIToolbar!
+    @IBOutlet weak var shareButton: UIBarButtonItem!
     
-    
-    //MARK: LifeCycle
+    //MARK:- LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.topTextField.delegate = self
@@ -26,7 +28,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
         bottomTextField.defaultTextAttributes = memeTextAttributes
         topTextField.text = "TOP"
         topTextField.textAlignment = .center
-        bottomTextField.text = "BUTTOM"
+        bottomTextField.text = "BOTTOM"
         bottomTextField.textAlignment = .center
         
     }
@@ -35,12 +37,14 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
         super.viewWillAppear(animated)
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         subscribeToKeyboardNotifications()
+        noImageToShare()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
     }
+    
     
     //MARK:- Text Attributes
     let memeTextAttributes: [String: Any] = [NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
@@ -63,7 +67,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
     
     //MARK:- UITextFieldDelegate
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text! == "TOP" || textField.text! == "BUTTOM" {
+        if textField.text! == "TOP" || textField.text! == "BOTTOM" {
             textField.text = ""
         }
     }
@@ -95,8 +99,41 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
     
     func unsubscribeFromKeyboardNotifications() {
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
+    func save() -> Meme {
+        // Create the meme
+        return Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView, memeImage: generateMemedImage())
+    }
+    
+    func generateMemedImage() -> UIImage {
+        
+        // Hide toolbar and navbar
+        topToolBar.isHidden = true
+        bottomToolBar.isHidden = true
+        
+        // Render view to an image
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        // Show toolbar and navbar
+        topToolBar.isHidden = false
+        bottomToolBar.isHidden = false
+        
+        return memedImage
+    }
+    
+    //disable the activity button when there no image to share.
+    func noImageToShare() {
+        if imagePickerView.image == nil {
+            shareButton.isEnabled = false
+        } else {
+            shareButton.isEnabled = true
+        }
+    }
     
     //MARK:- Action buttons
     @IBAction func pickAnImage(_ sender: Any) {
@@ -114,9 +151,28 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
     }
     
     @IBAction func shareButton(_ sender: Any) {
-        let image = imagePickerView.image!
+        let image = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(controller, animated: true, completion: nil)
+        controller.completionWithItemsHandler = {
+            (activity, success, items, error) in
+            if(success && error == nil){
+                self.dismiss(animated: true, completion: nil);
+            }
+            else if (error != nil){
+                let alert = UIAlertController(title: "Error", message: "Could not save image.", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Error", style: .default, handler: nil)
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        self.present(controller, animated: true, completion: nil)
     }
+    
+    @IBAction func cancelButton(_ sender: Any) {
+        topTextField.text = "TOP"
+        bottomTextField.text = "BOTTOM"
+        imagePickerView.image = nil
+        noImageToShare()
+    }
+    
 }
-

@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MemeMeViewController.swift
 //  MemeME
 //
 //  Created by L3GB4 on 2018-05-22.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UINavigationControllerDelegate ,UIImagePickerControllerDelegate, UITextFieldDelegate {
+class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UIImagePickerControllerDelegate, UITextFieldDelegate {
     
     //MARK:- Properties
     @IBOutlet weak var imagePickerView: UIImageView!
@@ -22,8 +22,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
     //MARK:- LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.topTextField.delegate = self
-        self.bottomTextField.delegate = self
+        inputFor(textField1: topTextField, textField2: bottomTextField)
         topTextField.defaultTextAttributes = memeTextAttributes
         bottomTextField.defaultTextAttributes = memeTextAttributes
         topTextField.text = "TOP"
@@ -61,6 +60,9 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imagePickerView.image = image
         }
+        if let editImage = info[UIImagePickerControllerEditedImage] as? UIImage {
+            imagePickerView.image = editImage
+        }
         imagePickerView.contentMode = .scaleAspectFit
         dismiss(animated: true, completion: nil)
     }
@@ -77,13 +79,27 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
         return true
     }
     
+    //Setting the text field delegate into one function
+    func inputFor(textField1: UITextField!, textField2: UITextField!) {
+        if textField1 == topTextField || textField2 == bottomTextField {
+            self.topTextField.delegate = self
+            self.bottomTextField.delegate = self
+        }
+    }
+    
     //MARK:- Keyboard will show and hide
     @objc func keyboardWillShow(_ notification: Notification) {
-        view.frame.origin.y -= getKeyboardHeight(notification)
+        if bottomTextField.isEditing == true {
+            view.frame.origin.y -= getKeyboardHeight(notification)
+        }
+        
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
-        view.frame.origin.y += getKeyboardHeight(notification)
+        if bottomTextField.isEditing == true {
+            view.frame.origin.y += getKeyboardHeight(notification)
+        }
+        
     }
     
     func getKeyboardHeight(_ notification: Notification) -> CGFloat {
@@ -135,19 +151,24 @@ class ViewController: UIViewController, UINavigationControllerDelegate ,UIImageP
         }
     }
     
-    //MARK:- Action buttons
-    @IBAction func pickAnImage(_ sender: Any) {
+    //Chose a source type to be used.
+    func choseAnImage(from: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
+        if from == .camera {
+            imagePicker.sourceType = .camera
+        }
+        imagePicker.allowsEditing = true
         present(imagePicker, animated: true, completion: nil)
     }
     
+    //MARK:- Action buttons
+    @IBAction func pickAnImage(_ sender: Any) {
+        choseAnImage(from: .photoLibrary)
+    }
+    
     @IBAction func pickAnImageFromCamera(_ sender: Any) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-        present(imagePicker, animated: true, completion: nil)
+        choseAnImage(from: .camera)
     }
     
     @IBAction func shareButton(_ sender: Any) {

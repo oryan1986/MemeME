@@ -23,13 +23,6 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     override func viewDidLoad() {
         super.viewDidLoad()
         inputFor(textField1: topTextField, textField2: bottomTextField)
-        topTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.text = "TOP"
-        topTextField.textAlignment = .center
-        bottomTextField.text = "BOTTOM"
-        bottomTextField.textAlignment = .center
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +42,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     let memeTextAttributes: [String: Any] = [NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
                                              NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
                                              NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-                                             NSAttributedStringKey.strokeWidth.rawValue: 2.0]
+                                             NSAttributedStringKey.strokeWidth.rawValue: 3]
     
     //MARK:- UIImagePickerControllerDelegates
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -79,11 +72,17 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         return true
     }
     
-    //Setting the text field delegate into one function
+    //Putting the text field into one function
     func inputFor(textField1: UITextField!, textField2: UITextField!) {
         if textField1 == topTextField || textField2 == bottomTextField {
             self.topTextField.delegate = self
             self.bottomTextField.delegate = self
+            topTextField.defaultTextAttributes = memeTextAttributes
+            bottomTextField.defaultTextAttributes = memeTextAttributes
+            topTextField.text = "TOP"
+            topTextField.textAlignment = .center
+            bottomTextField.text = "BOTTOM"
+            bottomTextField.textAlignment = .center
         }
     }
     
@@ -120,7 +119,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     
     func save() -> Meme {
         // Create the meme
-        return Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView, memeImage: generateMemedImage())
+        return Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView.image!, memeImage: generateMemedImage())
     }
     
     func generateMemedImage() -> UIImage {

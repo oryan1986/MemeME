@@ -22,7 +22,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     //MARK:- LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        inputFor(textField1: topTextField, textField2: bottomTextField)
+        inputFor(textField1: topTextField, textField2: bottomTextField, text1: "TOP", text2: "BOTTOM")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,15 +73,15 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     }
     
     //Putting the text field into one function
-    func inputFor(textField1: UITextField!, textField2: UITextField!) {
+    func inputFor(textField1: UITextField!, textField2: UITextField!, text1: String, text2: String) {
         if textField1 == topTextField || textField2 == bottomTextField {
             self.topTextField.delegate = self
             self.bottomTextField.delegate = self
             topTextField.defaultTextAttributes = memeTextAttributes
             bottomTextField.defaultTextAttributes = memeTextAttributes
-            topTextField.text = "TOP"
+            topTextField.text = ("\(text1)")
             topTextField.textAlignment = .center
-            bottomTextField.text = "BOTTOM"
+            bottomTextField.text = ("\(text2)")
             bottomTextField.textAlignment = .center
         }
     }

@@ -22,7 +22,8 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     //MARK:- LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        inputFor(textField1: topTextField, textField2: bottomTextField, text1: "TOP", text2: "BOTTOM")
+        inputFor(textField: topTextField, defaultText: "TOP")
+        inputFor(textField: bottomTextField, defaultText: "BOTTOM")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,7 +43,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     let memeTextAttributes: [String: Any] = [NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
                                              NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
                                              NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-                                             NSAttributedStringKey.strokeWidth.rawValue: 3]
+                                             NSAttributedStringKey.strokeWidth.rawValue: -3]
     
     //MARK:- UIImagePickerControllerDelegates
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -52,9 +53,6 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imagePickerView.image = image
-        }
-        if let editImage = info[UIImagePickerControllerEditedImage] as? UIImage {
-            imagePickerView.image = editImage
         }
         imagePickerView.contentMode = .scaleAspectFit
         dismiss(animated: true, completion: nil)
@@ -73,17 +71,11 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     }
     
     //Putting the text field into one function
-    func inputFor(textField1: UITextField!, textField2: UITextField!, text1: String, text2: String) {
-        if textField1 == topTextField || textField2 == bottomTextField {
-            self.topTextField.delegate = self
-            self.bottomTextField.delegate = self
-            topTextField.defaultTextAttributes = memeTextAttributes
-            bottomTextField.defaultTextAttributes = memeTextAttributes
-            topTextField.text = ("\(text1)")
-            topTextField.textAlignment = .center
-            bottomTextField.text = ("\(text2)")
-            bottomTextField.textAlignment = .center
-        }
+    func inputFor(textField: UITextField, defaultText: String) {
+        textField.delegate = self
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.text = defaultText
+        textField.textAlignment = .center
     }
     
     //MARK:- Keyboard will show and hide
@@ -96,7 +88,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     
     @objc func keyboardWillHide(_ notification: Notification) {
         if bottomTextField.isEditing == true {
-            view.frame.origin.y += getKeyboardHeight(notification)
+            view.frame.origin.y = 0
         }
         
     }
@@ -157,7 +149,6 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         if from == .camera {
             imagePicker.sourceType = .camera
         }
-        imagePicker.allowsEditing = true
         present(imagePicker, animated: true, completion: nil)
     }
     

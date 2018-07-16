@@ -80,14 +80,14 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     
     //MARK:- Keyboard will show and hide
     @objc func keyboardWillShow(_ notification: Notification) {
-        if bottomTextField.isEditing == true {
+        if bottomTextField.isEditing {
             view.frame.origin.y -= getKeyboardHeight(notification)
         }
         
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
-        if bottomTextField.isEditing == true {
+        if bottomTextField.isEditing {
             view.frame.origin.y = 0
         }
         
@@ -109,9 +109,14 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
-    func save() -> Meme {
+    func save() {
         // Create the meme
-        return Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView.image!, memeImage: generateMemedImage())
+        let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView.image!, memeImage: generateMemedImage())
+        
+        // Add it to the memes array in the Application Delegate
+        let object = UIApplication.shared.delegate
+        let appDelegate = object as! AppDelegate
+        appDelegate.memes.append(meme)
     }
     
     func generateMemedImage() -> UIImage {
@@ -142,7 +147,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         }
     }
     
-    //Chose a source type to be used.
+    //Chose a source type to be used. Camera or photo library
     func choseAnImage(from: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -166,12 +171,13 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         controller.completionWithItemsHandler = {
             (activity, success, items, error) in
-            if(success && error == nil){
+            if(success && items == nil){
+                self.save()
                 self.dismiss(animated: true, completion: nil);
             }
             else if (error != nil){
                 let alert = UIAlertController(title: "Error", message: "Could not save image.", preferredStyle: .alert)
-                let action = UIAlertAction(title: "Error", style: .default, handler: nil)
+                let action = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(action)
                 self.present(alert, animated: true, completion: nil)
             }
@@ -184,6 +190,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         bottomTextField.text = "BOTTOM"
         imagePickerView.image = nil
         noImageToShare()
+        dismiss(animated: true, completion: nil)
     }
     
 }

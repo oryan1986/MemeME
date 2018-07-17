@@ -17,11 +17,18 @@ class SentMemeTableViewController: UIViewController, UITableViewDataSource, UITa
         return appDelegate.memes
     }
     
+    @IBOutlet weak var tableView: UITableView!
+    
     //MARK:- Life Cyle
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Sent Memes"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(memeMaker))
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     //Function for presenting the detail view controller
@@ -50,6 +57,7 @@ class SentMemeTableViewController: UIViewController, UITableViewDataSource, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detail = storyboard?.instantiateViewController(withIdentifier: "detailViewController") as! DetailMemesViewController
         detail.memes = self.meme[(indexPath as NSIndexPath).row]
+        detail.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detail, animated: true)
     }
     

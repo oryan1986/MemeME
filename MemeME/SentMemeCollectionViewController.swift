@@ -62,6 +62,7 @@ class SentMemeCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let detailImage = storyboard?.instantiateViewController(withIdentifier: "detailViewController") as! DetailMemesViewController
         detailImage.memes = self.meme[(indexPath as NSIndexPath).row]
+        detailImage.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailImage, animated: true)
     }
 

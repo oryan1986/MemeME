@@ -119,11 +119,15 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         appDelegate.memes.append(meme)
     }
     
+    func hideTopAndBottomBars(_ hide: Bool) {
+        topToolBar.isHidden = hide
+        bottomToolBar.isHidden = hide
+    }
+    
     func generateMemedImage() -> UIImage {
         
         // Hide toolbar and navbar
-        topToolBar.isHidden = true
-        bottomToolBar.isHidden = true
+        hideTopAndBottomBars(true)
         
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -132,8 +136,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         UIGraphicsEndImageContext()
         
         // Show toolbar and navbar
-        topToolBar.isHidden = false
-        bottomToolBar.isHidden = false
+        hideTopAndBottomBars(false)
         
         return memedImage
     }
@@ -171,7 +174,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
         let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         controller.completionWithItemsHandler = {
             (activity, success, items, error) in
-            if(success && items == nil){
+            if success && items == nil {
                 self.save()
                 self.dismiss(animated: true, completion: nil);
             }

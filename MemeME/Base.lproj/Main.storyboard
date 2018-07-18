@@ -287,12 +287,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UlY-ry-vg1">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UlY-ry-vg1">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="UlY-ry-vg1" firstAttribute="bottom" secondItem="LVg-ue-6Ib" secondAttribute="bottom" id="7pg-x1-QWl"/>
+                            <constraint firstItem="UlY-ry-vg1" firstAttribute="trailing" secondItem="LVg-ue-6Ib" secondAttribute="trailing" id="MEB-qG-tHO"/>
+                            <constraint firstItem="UlY-ry-vg1" firstAttribute="leading" secondItem="LVg-ue-6Ib" secondAttribute="leading" id="can-vV-9Uw"/>
+                            <constraint firstItem="UlY-ry-vg1" firstAttribute="top" secondItem="JTp-ab-M1r" secondAttribute="top" id="lQR-er-aVk"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="LVg-ue-6Ib"/>
                     </view>
                     <connections>

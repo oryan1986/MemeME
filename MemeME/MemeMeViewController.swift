@@ -154,9 +154,7 @@ class MemeMeViewController: UIViewController, UINavigationControllerDelegate ,UI
     func choseAnImage(from: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        if from == .camera {
-            imagePicker.sourceType = .camera
-        }
+        imagePicker.sourceType = from
         present(imagePicker, animated: true, completion: nil)
     }
     

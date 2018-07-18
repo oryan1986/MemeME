@@ -6,7 +6,6 @@
 //  Copyright © 2018 L3GB4. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 struct Meme {

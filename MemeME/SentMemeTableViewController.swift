@@ -60,6 +60,4 @@ class SentMemeTableViewController: UIViewController, UITableViewDataSource, UITa
         detail.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detail, animated: true)
     }
-    
-    
 }
